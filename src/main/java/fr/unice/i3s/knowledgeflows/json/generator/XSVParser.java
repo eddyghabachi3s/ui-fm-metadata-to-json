@@ -1,6 +1,7 @@
 package fr.unice.i3s.knowledgeflows.json.generator;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -60,5 +61,26 @@ public class XSVParser {
         }
     }
 
+    public void readAndParse() throws IOException, NoSuchMethodException {
+        int lineNumber = 0;
+        while (this.xsvreader.ready()) {
+            lineNumber++;
+            String[] chunks = this.readAndSplit();
+            LineParser parser = new LineParser();
 
+            for (ColumnNames cn : this.columnsOrder.keySet()) {
+                int col = this.columnsOrder.get(cn);
+                if (col >= chunks.length) {
+                    System.out.println("[WARNING] Some columns must be empty: column #"+col+" named "+cn.getRealName()+" on line #"+lineNumber);
+                } else {
+                    Method method = LineParser.class.getMethod(cn.getMethodName(), String.class);
+                    String input = chunks[col].trim();
+
+                    if (chunks)
+
+                    method.invoke(parser, chunks[col]);
+                }
+            }
+        }
+    }
 }
