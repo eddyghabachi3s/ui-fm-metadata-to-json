@@ -4,7 +4,7 @@
 
     <groupId>fr.unice.i3s.knowledgeflows</groupId>
     <artifactId>ui-fm-metadata-generator</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>ui-fm-metadata-generator</name>

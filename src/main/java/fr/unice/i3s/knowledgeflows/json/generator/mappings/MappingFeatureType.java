@@ -1,4 +1,4 @@
-package fr.unice.i3s.knowledgeflows.json.generator;
+package fr.unice.i3s.knowledgeflows.json.generator.mappings;
 
 import fr.unice.i3s.knowledgeflows.json.model.FeatureType;
 
