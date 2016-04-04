@@ -42,7 +42,19 @@ public class Main {
 
         String result = outputPath;
         File output = new File(outputPath);
-        output.mkdirs();
+
+        if (!output.exists()) {
+            if (output.isDirectory()) {
+                output.mkdirs();
+            } else {
+                output.getParentFile().mkdirs();
+            }
+        } else {
+            if (output.isFile()) {
+                System.err.println("Error: the following file already exists: "+outputPath);
+                System.exit(0);
+            }
+        }
 
         if (output.isDirectory()) {
             result = output.getAbsolutePath()+File.separator+DEFAULT_FILENAME;

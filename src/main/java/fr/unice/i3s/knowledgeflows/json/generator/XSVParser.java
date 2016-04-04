@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -17,7 +18,8 @@ import java.util.Map;
  */
 public class XSVParser {
 
-    private static final String DEFAULT_SEPARATION_CHARACTER = ";";
+    private static final String DEFAULT_CSV_SEPARATION_CHARACTER = ",";
+    private static final String OTHER_POSSIBLE_CSV_SEPARATION_CHARACTER = ";";
     private static final String DEFAULT_FILENAME = "output.json";
 
     private String separationCharacter;
@@ -29,16 +31,18 @@ public class XSVParser {
         this.xsvreader = new BufferedReader(new FileReader(inputPath));
         this.outputPath = outputPath;
         this.guessSeparationCharacterFromInputPath(inputPath);
+
+        this.columnsOrder = new HashMap<ColumnNames,Integer>();
         this.initColumns(ColumnNames.values());
     }
 
     private void guessSeparationCharacterFromInputPath(String inputPath) {
         if (inputPath.endsWith("csv")) {
-            this.separationCharacter = ";";
+            this.separationCharacter = DEFAULT_CSV_SEPARATION_CHARACTER;
         } else if (inputPath.endsWith("tsv")) {
             this.separationCharacter = "\t";
         } else {
-            this.separationCharacter = DEFAULT_SEPARATION_CHARACTER;
+            this.separationCharacter = DEFAULT_CSV_SEPARATION_CHARACTER;
         }
     }
 
@@ -52,7 +56,6 @@ public class XSVParser {
         for (String c : readColumns) {
             for (ColumnNames cn : columns) {
                 if (cn.getRealName().equals(c.trim())) {
-                    System.out.println(c.trim());
                     this.columnsOrder.put(cn, i);
                     break;
                 }
@@ -61,8 +64,8 @@ public class XSVParser {
         }
 
         if (this.columnsOrder.size() != columns.length) {
-            if (this.separationCharacter.equals(";")) {
-                this.separationCharacter = ",";
+            if (this.separationCharacter.equals(DEFAULT_CSV_SEPARATION_CHARACTER)) {
+                this.separationCharacter = OTHER_POSSIBLE_CSV_SEPARATION_CHARACTER;
                 this.initColumns(columns);
             } else {
                 throw new GeneratorException("Some columns are missing ! Character used for separation: "+this.separationCharacter+". Columns read:"+readColumns);

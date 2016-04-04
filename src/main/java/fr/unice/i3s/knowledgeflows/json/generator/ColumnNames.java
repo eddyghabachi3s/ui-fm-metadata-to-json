@@ -5,7 +5,7 @@ package fr.unice.i3s.knowledgeflows.json.generator;
  */
 public enum ColumnNames {
     ID("id","setId"),
-    TYPE("type","setType");
+    TYPE("Type","setType");
 
     private String realName;
     private String methodName;
