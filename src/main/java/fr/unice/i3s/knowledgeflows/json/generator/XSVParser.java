@@ -8,19 +8,31 @@ import java.util.Map;
  */
 public class XSVParser {
 
-    protected String separationCharacter;
-    protected String outputPath;
-    protected BufferedReader xsvreader;
-    protected Map<ColumnNames,Integer> columnsOrder;
+    private static final String DEFAULT_SEPARATION_CHARACTER = ";";
+    private String separationCharacter;
+    private String outputPath;
+    private BufferedReader xsvreader;
+    private Map<ColumnNames,Integer> columnsOrder;
 
-    public XSVParser(String inputPath, String outputPath, ColumnNames[] columns, String separationCharacter) throws IOException, GeneratorException {
+    public XSVParser(String inputPath, String outputPath, ColumnNames[] columns) throws IOException, GeneratorException {
         this.xsvreader = new BufferedReader(new FileReader(inputPath));
         this.outputPath = outputPath;
-        this.separationCharacter = separationCharacter;
+        this.guessSeparationCharacterFromInputPath(inputPath);
         this.initColumns(columns);
     }
 
-    protected String[] readAndSplit() throws IOException {
+    private void guessSeparationCharacterFromInputPath(String inputPath) {
+        String extension = inputPath.substring(inputPath.length()-4);
+        if (extension.equals("csv")) {
+            this.separationCharacter = ";";
+        } else if (extension.equals("tsv")) {
+            this.separationCharacter = "\t";
+        } else {
+            this.separationCharacter = DEFAULT_SEPARATION_CHARACTER;
+        }
+    }
+
+    private String[] readAndSplit() throws IOException {
         return this.xsvreader.readLine().split(this.separationCharacter);
     }
 
@@ -38,7 +50,15 @@ public class XSVParser {
             i++;
         }
 
-        if (this.columnsOrder.size() != columns.length)
-            throw new GeneratorException("Some columns are missing !"+this.columnsOrder);
+        if (this.columnsOrder.size() != columns.length) {
+            if (this.separationCharacter.equals(";")) {
+                this.separationCharacter = ",";
+                this.initColumns(columns);
+            } else {
+                throw new GeneratorException("Some columns are missing ! Character used for separation: "+this.separationCharacter+". Columns read:"+readColumns);
+            }
+        }
     }
+
+
 }

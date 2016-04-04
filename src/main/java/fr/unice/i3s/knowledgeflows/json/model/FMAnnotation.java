@@ -1,4 +1,4 @@
-package fr.unice.i3s.knowledgeflows.json.metadata.model;
+package fr.unice.i3s.knowledgeflows.json.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
