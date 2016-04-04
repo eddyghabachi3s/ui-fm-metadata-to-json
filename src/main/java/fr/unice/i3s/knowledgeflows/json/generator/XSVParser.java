@@ -25,11 +25,11 @@ public class XSVParser {
     private BufferedReader xsvreader;
     private Map<ColumnNames,Integer> columnsOrder;
 
-    public XSVParser(String inputPath, String outputPath, ColumnNames[] columns) throws IOException, GeneratorException {
+    public XSVParser(String inputPath, String outputPath) throws IOException, GeneratorException {
         this.xsvreader = new BufferedReader(new FileReader(inputPath));
         this.outputPath = outputPath;
         this.guessSeparationCharacterFromInputPath(inputPath);
-        this.initColumns(columns);
+        this.initColumns(ColumnNames.values());
     }
 
     private void guessSeparationCharacterFromInputPath(String inputPath) {
@@ -125,5 +125,7 @@ public class XSVParser {
         fw.write(JSONSerializer.toJSON(annotation).toString());
         fw.flush();
         fw.close();
+
+        System.out.println("[SUCCESS] Output written in "+this.outputPath);
     }
 }

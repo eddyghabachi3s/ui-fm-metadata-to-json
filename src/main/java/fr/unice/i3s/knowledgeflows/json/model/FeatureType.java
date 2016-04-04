@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public enum FeatureType {
     LEAF,
     MANDATORY,
-    GROUP,
+    XOR,
+    OR,
     OPTIONAL
 }
