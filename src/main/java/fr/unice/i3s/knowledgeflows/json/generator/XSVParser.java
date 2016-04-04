@@ -1,7 +1,15 @@
 package fr.unice.i3s.knowledgeflows.json.generator;
 
+import fr.unice.i3s.knowledgeflows.json.model.FMAnnotation;
+import net.sf.json.JSONSerializer;
+
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -10,6 +18,8 @@ import java.util.Map;
 public class XSVParser {
 
     private static final String DEFAULT_SEPARATION_CHARACTER = ";";
+    private static final String DEFAULT_FILENAME = "output.json";
+
     private String separationCharacter;
     private String outputPath;
     private BufferedReader xsvreader;
@@ -23,10 +33,9 @@ public class XSVParser {
     }
 
     private void guessSeparationCharacterFromInputPath(String inputPath) {
-        String extension = inputPath.substring(inputPath.length()-4);
-        if (extension.equals("csv")) {
+        if (inputPath.endsWith("csv")) {
             this.separationCharacter = ";";
-        } else if (extension.equals("tsv")) {
+        } else if (inputPath.endsWith("tsv")) {
             this.separationCharacter = "\t";
         } else {
             this.separationCharacter = DEFAULT_SEPARATION_CHARACTER;
@@ -61,7 +70,21 @@ public class XSVParser {
         }
     }
 
-    public void readAndParse() throws IOException, NoSuchMethodException {
+    private void prepareOutput() {
+        File output = new File(this.outputPath);
+
+        if (output.isDirectory()) {
+            output.mkdirs();
+            this.outputPath = output.getAbsolutePath()+File.separator+DEFAULT_FILENAME;
+        } else {
+            File dir = output.getParentFile();
+            dir.mkdirs();
+        }
+    }
+
+    public void readAndParse() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        FMAnnotation annotation = new FMAnnotation();
+
         int lineNumber = 0;
         while (this.xsvreader.ready()) {
             lineNumber++;
@@ -76,11 +99,31 @@ public class XSVParser {
                     Method method = LineParser.class.getMethod(cn.getMethodName(), String.class);
                     String input = chunks[col].trim();
 
-                    if (chunks)
+                    if (input.startsWith("\"") && input.endsWith("\"")) {
+                        input = input.substring(1, input.length()-2).trim();
+                    }
 
-                    method.invoke(parser, chunks[col]);
+                    method.invoke(parser, input);
                 }
             }
+
+            annotation.addFeature(parser.getResult());
         }
+
+        DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, new Locale("fr","FR"));
+        Date today = new Date();
+        String dateOut = dateFormatter.format(today);
+        annotation.setDate(dateOut);
+
+        this.prepareOutput();
+
+        OutputStreamWriter fw = new OutputStreamWriter(
+                new FileOutputStream(this.outputPath),
+                Charset.forName("UTF-8").newEncoder()
+        );
+
+        fw.write(JSONSerializer.toJSON(annotation).toString());
+        fw.flush();
+        fw.close();
     }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 @XmlRootElement
 public class FMAnnotation {
 
+    private String date;
     private List<FeatureAnnotation> features;
 
     public FMAnnotation() {
@@ -22,5 +23,17 @@ public class FMAnnotation {
 
     public void setFeatures(List<FeatureAnnotation> features) {
         this.features = features;
+    }
+
+    public void addFeature(FeatureAnnotation feature) {
+        this.features.add(feature);
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
