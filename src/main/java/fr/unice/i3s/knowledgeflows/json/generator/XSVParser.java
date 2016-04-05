@@ -1,124 +1,78 @@
 package fr.unice.i3s.knowledgeflows.json.generator;
 
+import fr.unice.i3s.knowledgeflows.json.generator.mappings.MappingBoolean;
+import fr.unice.i3s.knowledgeflows.json.generator.mappings.MappingFeatureType;
 import fr.unice.i3s.knowledgeflows.json.model.FMAnnotation;
+import fr.unice.i3s.knowledgeflows.json.model.FeatureAnnotation;
 import net.sf.json.JSONSerializer;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Created by urli on 04/04/2016.
  */
 public class XSVParser {
 
-    private static final String DEFAULT_CSV_SEPARATION_CHARACTER = ",";
-    private static final String OTHER_POSSIBLE_CSV_SEPARATION_CHARACTER = ";";
-    private static final String DEFAULT_FILENAME = "output.json";
-
-    private String separationCharacter;
     private String outputPath;
     private BufferedReader xsvreader;
-    private Map<ColumnNames,Integer> columnsOrder;
+    private CSVFormat format;
 
-    public XSVParser(String inputPath, String outputPath) throws IOException, GeneratorException {
+    public XSVParser(String inputPath, String outputPath) throws IOException {
         this.xsvreader = new BufferedReader(new FileReader(inputPath));
         this.outputPath = outputPath;
         this.guessSeparationCharacterFromInputPath(inputPath);
-
-        this.columnsOrder = new HashMap<ColumnNames,Integer>();
-        this.initColumns(ColumnNames.values());
     }
 
     private void guessSeparationCharacterFromInputPath(String inputPath) {
-        if (inputPath.endsWith("csv")) {
-            this.separationCharacter = DEFAULT_CSV_SEPARATION_CHARACTER;
+        if (inputPath.endsWith(".excel.csv")) {
+            this.format = CSVFormat.EXCEL;
         } else if (inputPath.endsWith("tsv")) {
-            this.separationCharacter = "\t";
+            this.format = CSVFormat.TDF;
         } else {
-            this.separationCharacter = DEFAULT_CSV_SEPARATION_CHARACTER;
-        }
-    }
-
-    private String[] readAndSplit() throws IOException {
-        return this.xsvreader.readLine().split(this.separationCharacter);
-    }
-
-    private void initColumns(ColumnNames[] columns) throws IOException, GeneratorException {
-        String[] readColumns = this.readAndSplit();
-        int i = 0;
-        for (String c : readColumns) {
-            for (ColumnNames cn : columns) {
-                if (cn.getRealName().equals(c.trim())) {
-                    this.columnsOrder.put(cn, i);
-                    break;
-                }
-            }
-            i++;
-        }
-
-        if (this.columnsOrder.size() != columns.length) {
-            if (this.separationCharacter.equals(DEFAULT_CSV_SEPARATION_CHARACTER)) {
-                this.separationCharacter = OTHER_POSSIBLE_CSV_SEPARATION_CHARACTER;
-                this.initColumns(columns);
-            } else {
-                throw new GeneratorException("Some columns are missing ! Character used for separation: "+this.separationCharacter+". Columns read:"+readColumns);
-            }
-        }
-    }
-
-    private void prepareOutput() {
-        File output = new File(this.outputPath);
-
-        if (output.isDirectory()) {
-            output.mkdirs();
-            this.outputPath = output.getAbsolutePath()+File.separator+DEFAULT_FILENAME;
-        } else {
-            File dir = output.getParentFile();
-            dir.mkdirs();
+            this.format = CSVFormat.DEFAULT;
         }
     }
 
     public void readAndParse() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         FMAnnotation annotation = new FMAnnotation();
 
-        int lineNumber = 0;
-        while (this.xsvreader.ready()) {
-            lineNumber++;
-            String[] chunks = this.readAndSplit();
-            LineParser parser = new LineParser();
+        CSVParser parser = format.parse(this.xsvreader);
 
-            for (ColumnNames cn : this.columnsOrder.keySet()) {
-                int col = this.columnsOrder.get(cn);
-                if (col >= chunks.length) {
-                    System.out.println("[WARNING] Some columns must be empty: column #"+col+" named "+cn.getRealName()+" on line #"+lineNumber);
-                } else {
-                    Method method = LineParser.class.getMethod(cn.getMethodName(), String.class);
-                    String input = chunks[col].trim();
+        for (CSVRecord record : parser.getRecords()) {
+            FeatureAnnotation feature = new FeatureAnnotation();
 
-                    if (input.startsWith("\"") && input.endsWith("\"")) {
-                        input = input.substring(1, input.length()-2).trim();
-                    }
+            feature.setId(record.get(ColumnNames.ID.getRealName()));
 
-                    method.invoke(parser, input);
+            for (MappingFeatureType mft : MappingFeatureType.values()) {
+                if (mft.getCode().equals(record.get(ColumnNames.TYPE.getRealName()))) {
+                    feature.setType(mft.getType());
                 }
             }
+            feature.setLogo(record.get(ColumnNames.LOGO.getRealName()));
+            feature.setPhrase(record.get(ColumnNames.PHRASE.getRealName()));
+            feature.setReferences(record.get(ColumnNames.REFERENCES.getRealName()));
+            feature.setDisplayIfSelected(MappingBoolean.checkValue(record.get(ColumnNames.DISPLAYIFSELECTED.getRealName())));
+            feature.setDescription(record.get(ColumnNames.DESC.getRealName()));
+            feature.setShortDescription(record.get(ColumnNames.SHORTDESC.getRealName()));
+            feature.setQuestionable(MappingBoolean.checkValue(record.get(ColumnNames.QUESTION.getRealName())));
+            feature.setName(record.get(ColumnNames.NAME.getRealName()));
+            feature.setVisible(MappingBoolean.checkValue(record.get(ColumnNames.VISIBLE.getRealName())));
 
-            annotation.addFeature(parser.getResult());
+            annotation.addFeature(feature);
         }
 
         DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, new Locale("fr","FR"));
         Date today = new Date();
         String dateOut = dateFormatter.format(today);
         annotation.setDate(dateOut);
-
-        this.prepareOutput();
 
         OutputStreamWriter fw = new OutputStreamWriter(
                 new FileOutputStream(this.outputPath),
