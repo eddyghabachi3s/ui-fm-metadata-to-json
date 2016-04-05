@@ -4,7 +4,7 @@
 
     <groupId>fr.unice.i3s.knowledgeflows</groupId>
     <artifactId>ui-fm-metadata-generator</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>ui-fm-metadata-generator</name>
@@ -21,6 +21,7 @@
             <groupId>net.sf.json-lib</groupId>
             <artifactId>json-lib</artifactId>
             <version>2.4</version>
+            <classifier>jdk15</classifier>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
