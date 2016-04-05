@@ -1,11 +1,8 @@
 package fr.unice.i3s.knowledgeflows.main;
 
-import fr.unice.i3s.knowledgeflows.json.generator.GeneratorException;
 import fr.unice.i3s.knowledgeflows.json.generator.XSVParser;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by urli on 04/04/2016.
@@ -22,7 +19,7 @@ public class Main {
                 "\n"+cmdName+" -h"+
                 "\n"+cmdName+" <input.csv> [output]"+
                 "\n\t -h: display this usage"+
-                "\n\t <input.csv>: path to the CSV file containing metadata information"+
+                "\n\t <input>: path to the CSV/TSV file containing metadata information. Extension of the file will be used to parse file: .tsv means the separating character use tabulation, .csv means it is a default CSV, .excel.csv means it's an excel CSV."+
                 "\n\t [output]: optionnal output path to store datas. If omitted the produced file will be "+DEFAULT_FILENAME+" in the current directory.";
 
         System.out.println(usage);

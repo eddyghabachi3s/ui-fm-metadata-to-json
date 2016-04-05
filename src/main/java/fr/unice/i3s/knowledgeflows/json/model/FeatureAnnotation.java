@@ -18,7 +18,7 @@ public class FeatureAnnotation {
     private String examples;
     private String logo;
     private boolean visible;
-    private boolean displayIfVisible;
+    private boolean displayIfSelected;
     private String references;
 
     public FeatureAnnotation() {}
@@ -103,12 +103,12 @@ public class FeatureAnnotation {
         this.visible = visible;
     }
 
-    public boolean isDisplayIfVisible() {
-        return displayIfVisible;
+    public boolean isDisplayIfSelected() {
+        return displayIfSelected;
     }
 
-    public void setDisplayIfVisible(boolean displayIfVisible) {
-        this.displayIfVisible = displayIfVisible;
+    public void setDisplayIfSelected(boolean displayIfSelected) {
+        this.displayIfSelected = displayIfSelected;
     }
 
     public String getReferences() {

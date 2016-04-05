@@ -4,32 +4,37 @@ package fr.unice.i3s.knowledgeflows.json.generator;
  * Created by urli on 04/04/2016.
  */
 public enum ColumnNames {
-    ID("id","setId"),
-    TYPE("Type","setType"),
-    NAME("Name","setName"),
-    SHORTDESC("Short description","setShortDesc"),
-    QUESTION("Question (y/n)","setQuestion"),
-    PHRASE("Question/Affirmation","setPhrase"),
-    DESC("Description","setDesc"),
-    EXAMPLES("Examples","setExamples"),
-    LOGO("Logo (url)","setLogo"),
-    VISIBLE("Visible (y/n)","setVisible"),
-    DISPLAYIFSELECTED("Display if selected (y/n)","setDisplayIfSelected"),
-    REFERENCES("Reference(s)","setReference");
+    ID("id"),
+    TYPE("Type"),
+    NAME("Name"),
+    SHORTDESC("Short description"),
+    QUESTION("Question (y/n)"),
+    PHRASE("Question/Affirmation"),
+    DESC("Description"),
+    EXAMPLES("Examples"),
+    LOGO("Logo (url)"),
+    VISIBLE("Visible (y/n)"),
+    DISPLAYIFSELECTED("Display if selected (y/n)"),
+    REFERENCES("Reference(s)");
 
     private String realName;
-    private String methodName;
 
-    ColumnNames(String realName, String methodName) {
+    ColumnNames(String realName) {
         this.realName = realName;
-        this.methodName = methodName;
     }
 
     public String getRealName() {
         return realName;
     }
 
-    public String getMethodName() {
-        return methodName;
+    public static String[] getAllNames() {
+        ColumnNames[] values = ColumnNames.values();
+        String[] result = new String[values.length];
+        int i = 0;
+        for (ColumnNames cn : values) {
+            result[i++] = cn.getRealName();
+        }
+        return result;
     }
+
 }
