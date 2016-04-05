@@ -33,11 +33,11 @@ public class XSVParser {
 
     private void guessSeparationCharacterFromInputPath(String inputPath) {
         if (inputPath.endsWith(".excel.csv")) {
-            this.format = CSVFormat.EXCEL;
+            this.format = CSVFormat.EXCEL.withHeader(ColumnNames.getAllNames());
         } else if (inputPath.endsWith("tsv")) {
-            this.format = CSVFormat.TDF;
+            this.format = CSVFormat.TDF.withHeader(ColumnNames.getAllNames());
         } else {
-            this.format = CSVFormat.DEFAULT;
+            this.format = CSVFormat.DEFAULT.withHeader(ColumnNames.getAllNames());
         }
     }
 
@@ -45,28 +45,30 @@ public class XSVParser {
         FMAnnotation annotation = new FMAnnotation();
 
         CSVParser parser = format.parse(this.xsvreader);
-
+        int i = 0;
         for (CSVRecord record : parser.getRecords()) {
-            FeatureAnnotation feature = new FeatureAnnotation();
+            if (i++ > 0) {
+                FeatureAnnotation feature = new FeatureAnnotation();
 
-            feature.setId(record.get(ColumnNames.ID.getRealName()));
+                feature.setId(record.get(ColumnNames.ID.getRealName()));
 
-            for (MappingFeatureType mft : MappingFeatureType.values()) {
-                if (mft.getCode().equals(record.get(ColumnNames.TYPE.getRealName()))) {
-                    feature.setType(mft.getType());
+                for (MappingFeatureType mft : MappingFeatureType.values()) {
+                    if (mft.getCode().equals(record.get(ColumnNames.TYPE.getRealName()))) {
+                        feature.setType(mft.getType());
+                    }
                 }
-            }
-            feature.setLogo(record.get(ColumnNames.LOGO.getRealName()));
-            feature.setPhrase(record.get(ColumnNames.PHRASE.getRealName()));
-            feature.setReferences(record.get(ColumnNames.REFERENCES.getRealName()));
-            feature.setDisplayIfSelected(MappingBoolean.checkValue(record.get(ColumnNames.DISPLAYIFSELECTED.getRealName())));
-            feature.setDescription(record.get(ColumnNames.DESC.getRealName()));
-            feature.setShortDescription(record.get(ColumnNames.SHORTDESC.getRealName()));
-            feature.setQuestionable(MappingBoolean.checkValue(record.get(ColumnNames.QUESTION.getRealName())));
-            feature.setName(record.get(ColumnNames.NAME.getRealName()));
-            feature.setVisible(MappingBoolean.checkValue(record.get(ColumnNames.VISIBLE.getRealName())));
+                feature.setLogo(record.get(ColumnNames.LOGO.getRealName()));
+                feature.setPhrase(record.get(ColumnNames.PHRASE.getRealName()));
+                feature.setReferences(record.get(ColumnNames.REFERENCES.getRealName()));
+                feature.setDisplayIfSelected(MappingBoolean.checkValue(record.get(ColumnNames.DISPLAYIFSELECTED.getRealName())));
+                feature.setDescription(record.get(ColumnNames.DESC.getRealName()));
+                feature.setShortDescription(record.get(ColumnNames.SHORTDESC.getRealName()));
+                feature.setQuestionable(MappingBoolean.checkValue(record.get(ColumnNames.QUESTION.getRealName())));
+                feature.setName(record.get(ColumnNames.NAME.getRealName()));
+                feature.setVisible(MappingBoolean.checkValue(record.get(ColumnNames.VISIBLE.getRealName())));
 
-            annotation.addFeature(feature);
+                annotation.addFeature(feature);
+            }
         }
 
         DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, new Locale("fr","FR"));

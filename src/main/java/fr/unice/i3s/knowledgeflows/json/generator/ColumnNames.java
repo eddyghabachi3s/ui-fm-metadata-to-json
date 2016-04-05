@@ -27,4 +27,14 @@ public enum ColumnNames {
         return realName;
     }
 
+    public static String[] getAllNames() {
+        ColumnNames[] values = ColumnNames.values();
+        String[] result = new String[values.length];
+        int i = 0;
+        for (ColumnNames cn : values) {
+            result[i++] = cn.getRealName();
+        }
+        return result;
+    }
+
 }
