@@ -33,11 +33,11 @@ public class XSVParser {
 
     private void guessSeparationCharacterFromInputPath(String inputPath) {
         if (inputPath.endsWith(".excel.csv")) {
-            this.format = CSVFormat.EXCEL.withHeader(ColumnNames.getAllNames());
+            this.format = CSVFormat.EXCEL.withHeader();
         } else if (inputPath.endsWith("tsv")) {
-            this.format = CSVFormat.TDF.withHeader(ColumnNames.getAllNames());
+            this.format = CSVFormat.TDF.withHeader();
         } else {
-            this.format = CSVFormat.DEFAULT.withHeader(ColumnNames.getAllNames());
+            this.format = CSVFormat.DEFAULT.withHeader();
         }
     }
 

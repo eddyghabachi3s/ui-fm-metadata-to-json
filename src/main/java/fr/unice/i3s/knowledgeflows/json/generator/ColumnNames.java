@@ -4,10 +4,10 @@ package fr.unice.i3s.knowledgeflows.json.generator;
  * Created by urli on 04/04/2016.
  */
 public enum ColumnNames {
-    ID("id"),
+    ID("Id"),
     TYPE("Type"),
     NAME("Name"),
-    SHORTDESC("Short description"),
+    SHORTDESC("Short description (name)"),
     QUESTION("Question (y/n)"),
     PHRASE("Question/Affirmation"),
     DESC("Description"),
