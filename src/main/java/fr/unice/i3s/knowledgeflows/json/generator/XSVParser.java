@@ -1,7 +1,6 @@
 package fr.unice.i3s.knowledgeflows.json.generator;
 
 import fr.unice.i3s.knowledgeflows.json.generator.mappings.MappingBoolean;
-import fr.unice.i3s.knowledgeflows.json.generator.mappings.MappingFeatureType;
 import fr.unice.i3s.knowledgeflows.json.model.FMAnnotation;
 import fr.unice.i3s.knowledgeflows.json.model.FeatureAnnotation;
 import net.sf.json.JSONSerializer;
@@ -50,11 +49,6 @@ public class XSVParser {
 
             feature.setId(record.get(ColumnNames.ID.getRealName()));
 
-            for (MappingFeatureType mft : MappingFeatureType.values()) {
-                if (mft.getCode().equals(record.get(ColumnNames.TYPE.getRealName()))) {
-                    feature.setType(mft.getType());
-                }
-            }
             feature.setLogo(record.get(ColumnNames.LOGO.getRealName()));
             feature.setPhrase(record.get(ColumnNames.PHRASE.getRealName()));
             feature.setReferences(record.get(ColumnNames.REFERENCES.getRealName()));
@@ -62,7 +56,6 @@ public class XSVParser {
             feature.setDescription(record.get(ColumnNames.DESC.getRealName()));
             feature.setShortDescription(record.get(ColumnNames.SHORTDESC.getRealName()));
             feature.setQuestionable(MappingBoolean.checkValue(record.get(ColumnNames.QUESTION.getRealName())));
-            feature.setName(record.get(ColumnNames.NAME.getRealName()));
             feature.setVisible(MappingBoolean.checkValue(record.get(ColumnNames.VISIBLE.getRealName())));
 
             annotation.addFeature(feature);

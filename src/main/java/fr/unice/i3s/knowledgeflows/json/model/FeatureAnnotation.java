@@ -9,8 +9,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class FeatureAnnotation {
 
     private String id;
-    private FeatureType type;
-    private String name;
     private String shortDescription;
     private boolean questionable;
     private String phrase;
@@ -29,22 +27,6 @@ public class FeatureAnnotation {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public FeatureType getType() {
-        return type;
-    }
-
-    public void setType(FeatureType type) {
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getShortDescription() {
