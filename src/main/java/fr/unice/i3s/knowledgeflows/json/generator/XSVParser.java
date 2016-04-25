@@ -1,6 +1,7 @@
 package fr.unice.i3s.knowledgeflows.json.generator;
 
 import fr.unice.i3s.knowledgeflows.json.generator.mappings.MappingBoolean;
+import fr.unice.i3s.knowledgeflows.json.generator.mappings.MappingInt;
 import fr.unice.i3s.knowledgeflows.json.model.FMAnnotation;
 import fr.unice.i3s.knowledgeflows.json.model.FeatureAnnotation;
 import net.sf.json.JSONSerializer;
@@ -56,6 +57,7 @@ public class XSVParser {
             feature.setDescription(record.get(ColumnNames.DESC.getRealName()));
             feature.setShortDescription(record.get(ColumnNames.SHORTDESC.getRealName()));
             feature.setQuestionable(MappingBoolean.checkValue(record.get(ColumnNames.QUESTION.getRealName())));
+            feature.setOrder(MappingInt.checkValue(record.get(ColumnNames.ORDER.getRealName())));
             feature.setVisible(MappingBoolean.checkValue(record.get(ColumnNames.VISIBLE.getRealName())));
 
             annotation.addFeature(feature);

@@ -10,6 +10,7 @@ public class FeatureAnnotation {
 
     private String id;
     private String shortDescription;
+    private int order;
     private boolean questionable;
     private String phrase;
     private String description;
@@ -99,5 +100,13 @@ public class FeatureAnnotation {
 
     public void setReferences(String references) {
         this.references = references;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 }

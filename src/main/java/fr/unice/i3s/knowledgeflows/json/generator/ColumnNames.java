@@ -5,6 +5,7 @@ package fr.unice.i3s.knowledgeflows.json.generator;
  */
 public enum ColumnNames {
     ID("Id"),
+    ORDER("Order"),
     SHORTDESC("Short description (name)"),
     QUESTION("Question (y/n)"),
     PHRASE("Question/Affirmation"),
