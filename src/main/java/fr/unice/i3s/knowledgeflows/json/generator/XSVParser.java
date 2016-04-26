@@ -56,6 +56,7 @@ public class XSVParser {
             feature.setDisplayIfSelected(MappingBoolean.checkValue(record.get(ColumnNames.DISPLAYIFSELECTED.getRealName())));
             feature.setDescription(record.get(ColumnNames.DESC.getRealName()));
             feature.setShortDescription(record.get(ColumnNames.SHORTDESC.getRealName()));
+            feature.setExamples(record.get(ColumnNames.EXAMPLES.getRealName()));
             feature.setQuestionable(MappingBoolean.checkValue(record.get(ColumnNames.QUESTION.getRealName())));
             feature.setOrder(MappingInt.checkValue(record.get(ColumnNames.ORDER.getRealName())));
             feature.setVisible(MappingBoolean.checkValue(record.get(ColumnNames.VISIBLE.getRealName())));
