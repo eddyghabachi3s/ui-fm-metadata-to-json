@@ -60,6 +60,7 @@ public class XSVParser {
             feature.setQuestionable(MappingBoolean.checkValue(record.get(ColumnNames.QUESTION.getRealName())));
             feature.setOrder(MappingInt.checkValue(record.get(ColumnNames.ORDER.getRealName())));
             feature.setVisible(MappingBoolean.checkValue(record.get(ColumnNames.VISIBLE.getRealName())));
+            feature.setDelayable(MappingBoolean.checkValue(record.get(ColumnNames.DELEYABLE.getRealName())));
 
             annotation.addFeature(feature);
         }

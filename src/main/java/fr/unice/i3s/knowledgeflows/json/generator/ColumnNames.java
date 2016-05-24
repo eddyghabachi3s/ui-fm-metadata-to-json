@@ -14,7 +14,8 @@ public enum ColumnNames {
     LOGO("Logo (url)"),
     VISIBLE("Visible (y/n)"),
     DISPLAYIFSELECTED("Display if selected (y/n)"),
-    REFERENCES("Reference(s)");
+    REFERENCES("Reference(s)"),
+    DELEYABLE("Delayable (y/n)");
 
     private String realName;
 

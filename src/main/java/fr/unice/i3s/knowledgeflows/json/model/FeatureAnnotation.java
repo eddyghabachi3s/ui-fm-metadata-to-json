@@ -18,6 +18,7 @@ public class FeatureAnnotation {
     private String logo;
     private boolean visible;
     private boolean displayIfSelected;
+    private boolean delayable;
     private String references;
 
     public FeatureAnnotation() {}
@@ -108,5 +109,13 @@ public class FeatureAnnotation {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public boolean isDelayable() {
+        return this.delayable;
+    }
+
+    public void setDelayable(boolean delayable) {
+        this.delayable = delayable;
     }
 }
