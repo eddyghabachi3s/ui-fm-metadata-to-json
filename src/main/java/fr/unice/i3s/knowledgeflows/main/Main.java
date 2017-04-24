@@ -17,10 +17,12 @@ public class Main {
         String usage = "Utility tool to generate asset JSON file for configuration interface of Knowledge Flows project: "+
                 "\nUsage:"+
                 "\n"+cmdName+" -h"+
-                "\n"+cmdName+" <input.csv> [output]"+
+                "\n"+cmdName+" [-(all] [-mini] <input.csv> [output]"+
                 "\n\t -h: display this usage"+
+                "\n\t [-all]: optional. If present, all metadata, even for features that won't be displayed will be saved in the output" +
+                // TODO "\n\t [-mini]: optional. If present, metadata elements that are empty or non existant will not be saved in the output" +
                 "\n\t <input>: path to the CSV/TSV file containing metadata information. Extension of the file will be used to parse file: .tsv means the separating character use tabulation, .csv means it is a default CSV, .excel.csv means it's an excel CSV."+
-                "\n\t [output]: optionnal output path to store datas. If omitted the produced file will be "+DEFAULT_FILENAME+" in the current directory.";
+                "\n\t [output]: optional output path to store datas. If omitted the produced file will be "+DEFAULT_FILENAME+" in the current directory.";
 
         System.out.println(usage);
         System.exit(0);
@@ -61,25 +63,27 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 1 || args[0].equals("-h")) {
+        boolean displayAllFeatures = args.length > 0 && args[0].equals("-all");
+        int inputIndex = displayAllFeatures? 1 : 0;
+
+        if (args.length < 1 + inputIndex || args[0].equals("-h")) {
             usage();
         }
 
-        String inputPath = args[0];
+        String inputPath = args[inputIndex];
         checkInput(inputPath);
 
         String outputPath;
-        if (args.length == 1) {
+        if (args.length == inputIndex + 1) {
             outputPath = ".";
         } else {
-            outputPath = args[1];
+            outputPath = args[inputIndex + 1];
         }
 
         outputPath = checkAndCompleteOutput(outputPath);
 
-
         XSVParser parser = new XSVParser(inputPath, outputPath);
-        parser.readAndParse();
+        parser.readAndParse(displayAllFeatures);
 
     }
 }

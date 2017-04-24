@@ -15,7 +15,9 @@ public enum ColumnNames {
     VISIBLE("Visible (y/n)"),
     DISPLAYIFSELECTED("Display if selected (y/n)"),
     REFERENCES("Reference(s)"),
-    DELEYABLE("Delayable (y/n)");
+    DELEYABLE("Delayable (y/n)"),
+    FILTER_BY("FilterBy"),
+    VALUES("Values");
 
     private String realName;
 

@@ -2,6 +2,7 @@ package fr.unice.i3s.knowledgeflows.json.generator;
 
 import fr.unice.i3s.knowledgeflows.json.generator.mappings.MappingBoolean;
 import fr.unice.i3s.knowledgeflows.json.generator.mappings.MappingInt;
+import fr.unice.i3s.knowledgeflows.json.generator.mappings.MappingJsonObject;
 import fr.unice.i3s.knowledgeflows.json.model.FMAnnotation;
 import fr.unice.i3s.knowledgeflows.json.model.FeatureAnnotation;
 import net.sf.json.JSONSerializer;
@@ -41,7 +42,7 @@ public class XSVParser {
         }
     }
 
-    public void readAndParse() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void readAndParse(boolean displayAll) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         FMAnnotation annotation = new FMAnnotation();
 
         CSVParser parser = format.parse(this.xsvreader);
@@ -61,8 +62,12 @@ public class XSVParser {
             feature.setOrder(MappingInt.checkValue(record.get(ColumnNames.ORDER.getRealName())));
             feature.setVisible(MappingBoolean.checkValue(record.get(ColumnNames.VISIBLE.getRealName())));
             feature.setDelayable(MappingBoolean.checkValue(record.get(ColumnNames.DELEYABLE.getRealName())));
+            feature.setFilterBy(record.get(ColumnNames.FILTER_BY.getRealName()));
+            feature.setValues(MappingJsonObject.checkValue(record.get(ColumnNames.VALUES.getRealName())));
 
-            annotation.addFeature(feature);
+            if (displayAll || shouldBeDisplayed(feature)) {
+                annotation.addFeature(feature);
+            }
         }
 
         DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, new Locale("fr","FR"));
@@ -79,6 +84,10 @@ public class XSVParser {
         fw.flush();
         fw.close();
 
-        System.out.println("[SUCCESS] Output written in "+this.outputPath);
+        System.out.println("[SUCCESS] Output written in " + this.outputPath);
+    }
+
+    private boolean shouldBeDisplayed(FeatureAnnotation feature) {
+        return feature.isVisible() || (feature.getFilterBy() != null && !feature.getFilterBy().isEmpty());
     }
 }

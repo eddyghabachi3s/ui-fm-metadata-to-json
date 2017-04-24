@@ -1,5 +1,7 @@
 package fr.unice.i3s.knowledgeflows.json.model;
 
+import net.sf.json.JSONObject;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -20,6 +22,8 @@ public class FeatureAnnotation {
     private boolean displayIfSelected;
     private boolean delayable;
     private String references;
+    private String filterBy;
+    private JSONObject values;
 
     public FeatureAnnotation() {}
 
@@ -117,5 +121,21 @@ public class FeatureAnnotation {
 
     public void setDelayable(boolean delayable) {
         this.delayable = delayable;
+    }
+
+    public String getFilterBy() {
+        return filterBy;
+    }
+
+    public void setFilterBy(String filterBy) {
+        this.filterBy = filterBy;
+    }
+
+    public JSONObject getValues() {
+        return values;
+    }
+
+    public void setValues(JSONObject values) {
+        this.values = values;
     }
 }
